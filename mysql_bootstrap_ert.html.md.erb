@@ -183,7 +183,7 @@ See [MySQL Cluster Behavior](https://docs.pivotal.io/edge/p-mysql/cluster-behavi
 
 1. Run `bosh deploy` to apply these changes.
 <p class="note"><strong>Note</strong>: Review the changes for accuracy. Only type `yes` if the changes listed are correct.</p>
-<pre class="terminal">
+    <pre class="terminal">
     Jobs
     mysql-partition-f8abb6ac43ccc9fe16d7
       update
@@ -197,7 +197,7 @@ See [MySQL Cluster Behavior](https://docs.pivotal.io/edge/p-mysql/cluster-behavi
     Deploying
     \---------
     Are you sure you want to deploy? (type 'yes' to continue):
-</pre>
+    </pre>
     After you type `yes`, BOSH attempts to re-create the lost VMs:
 
     <pre class="terminal">
@@ -291,111 +291,119 @@ Next, complete the bootstrapping process in the following section.
     ### <a id="vms-terminated"></a>Scenario 2: Virtual Machines Terminated or Lost ###
     1. In more severe circumstances, such as power failure, it's possible that all of your VMs have been lost. They'll need to be recreated before you can begin to recover the cluster. In this case, you'll see the nodes appear as `unknown/unknown` in the BOSH output.
 
-            $ bosh instances
-            +--------------------------------------------------+--------------------+------------------------------------------------+------------+
-            | Instance                                         | State              | Resource Pool                                  | IPs        |
-            +--------------------------------------------------+--------------------+------------------------------------------------+------------+
-            | unknown/unknown                                  | unresponsive agent |                                                |            |
-            +--------------------------------------------------+--------------------+------------------------------------------------+------------+
-            | unknown/unknown                                  | unresponsive agent |                                                |            |
-            +--------------------------------------------------+--------------------+------------------------------------------------+------------+
-            | unknown/unknown                                  | unresponsive agent |                                                |            |
-            +--------------------------------------------------+--------------------+------------------------------------------------+------------+
+        <pre class="terminal">
+        $ bosh instances
+        +--------------------------------------------------+--------------------+------------------------------------------------+------------+
+        | Instance                                         | State              | Resource Pool                                  | IPs        |
+        +--------------------------------------------------+--------------------+------------------------------------------------+------------+
+        | unknown/unknown                                  | unresponsive agent |                                                |            |
+        +--------------------------------------------------+--------------------+------------------------------------------------+------------+
+        | unknown/unknown                                  | unresponsive agent |                                                |            |
+        +--------------------------------------------------+--------------------+------------------------------------------------+------------+
+        | unknown/unknown                                  | unresponsive agent |                                                |            |
+        +--------------------------------------------------+--------------------+------------------------------------------------+------------+
+        </pre>
 
         #### <a id="vm-recovery"></a>VM Recovery ####
 
         VM Recovery is best left to OpsManager by configuring the VM [Resurrector](http://docs.pivotal.io/pivotalcf/customizing/resurrector.html#enabling). If enabled, the system will notice that the VMs are gone, and automatically attempt to recreate them. You will be able to see evidence of that by seeing the scan-and-fix job in the output of `bosh tasks recent --no-filter`.
 
-            $ bosh tasks recent --no-filter
-            +-----+------------+-------------------------+----------+--------------------------------------------+---------------------------------------------------+
-            | #   | State      | Timestamp               | User     | Description                                | Result                                            |
-            +-----+------------+-------------------------+----------+--------------------------------------------+---------------------------------------------------+
-            | 123 | queued     | 2016-01-08 00:18:07 UTC | director | scan and fix                               |                                                   |
+        <pre class="terminal">
+        $ bosh tasks recent --no-filter
+        +-----+------------+-------------------------+----------+--------------------------------------------+---------------------------------------------------+
+        | #   | State      | Timestamp               | User     | Description                                | Result                                            |
+        +-----+------------+-------------------------+----------+--------------------------------------------+---------------------------------------------------+
+        | 123 | queued     | 2016-01-08 00:18:07 UTC | director | scan and fix                               |                                                   |
+        </pre>
 
         If you have not configured the Resurrector to run automatically, you can also run the BOSH Cloud Check interactive command `bosh cck` to delete any placeholder VMs. If given the option, select **Delete VM reference**.
 
-            $ bosh cck
+        <pre class="terminal">
+        $ bosh cck
 
-              Acting as user 'director' on deployment 'cf-e82cbf44613594d8a155' on 'p-bosh-30c19bdd43c55c627d70'
-            Performing cloud check...
+        Acting as user 'director' on deployment 'cf-e82cbf44613594d8a155' on 'p-bosh-30c19bdd43c55c627d70'
+        Performing cloud check...
 
-            Director task 34
-              Started scanning 22 vms
-              Started scanning 22 vms > Checking VM states. Done (00:00:10)
-              Started scanning 22 vms > 19 OK, 0 unresponsive, 3 missing, 0 unbound, 0 out of sync. Done (00:00:00)
-                 Done scanning 22 vms (00:00:10)
+        Director task 34
+          Started scanning 22 vms
+          Started scanning 22 vms > Checking VM states. Done (00:00:10)
+          Started scanning 22 vms > 19 OK, 0 unresponsive, 3 missing, 0 unbound, 0 out of sync. Done (00:00:00)
+             Done scanning 22 vms (00:00:10)
 
-              Started scanning 10 persistent disks
-              Started scanning 10 persistent disks > Looking for inactive disks. Done (00:00:02)
-              Started scanning 10 persistent disks > 10 OK, 0 missing, 0 inactive, 0 mount-info mismatch. Done (00:00:00)
-                 Done scanning 10 persistent disks (00:00:02)
+          Started scanning 10 persistent disks
+          Started scanning 10 persistent disks > Looking for inactive disks. Done (00:00:02)
+          Started scanning 10 persistent disks > 10 OK, 0 missing, 0 inactive, 0 mount-info mismatch. Done (00:00:00)
+             Done scanning 10 persistent disks (00:00:02)
 
-            Task 34 done
+        Task 34 done
 
-            Started   2015-11-26 01:42:42 UTC
-            Finished  2015-11-26 01:42:54 UTC
-            Duration  00:00:12
+        Started   2015-11-26 01:42:42 UTC
+        Finished  2015-11-26 01:42:54 UTC
+        Duration  00:00:12
 
-            Scan is complete, checking if any problems found.
+        Scan is complete, checking if any problems found.
 
-            Found 3 problems
+        Found 3 problems
 
-            Problem 1 of 3: VM with cloud ID `i-afe2801f' missing.
-                1. Skip for now
-                2. Recreate VM
-                3. Delete VM reference
-            Please choose a resolution [1 - 3]: 3
+        Problem 1 of 3: VM with cloud ID `i-afe2801f' missing.
+            1. Skip for now
+            2. Recreate VM
+            3. Delete VM reference
+        Please choose a resolution [1 - 3]: 3
 
-            Problem 2 of 3: VM with cloud ID `i-36741a86' missing.
-                1. Skip for now
-                2. Recreate VM
-                3. Delete VM reference
-            Please choose a resolution [1 - 3]: 3
+        Problem 2 of 3: VM with cloud ID `i-36741a86' missing.
+            1. Skip for now
+            2. Recreate VM
+            3. Delete VM reference
+        Please choose a resolution [1 - 3]: 3
 
-            Problem 3 of 3: VM with cloud ID `i-ce751b7e' missing.
-                1. Skip for now
-                2. Recreate VM
-                3. Delete VM reference
-            Please choose a resolution [1 - 3]: 3
+        Problem 3 of 3: VM with cloud ID `i-ce751b7e' missing.
+            1. Skip for now
+            2. Recreate VM
+            3. Delete VM reference
+        Please choose a resolution [1 - 3]: 3
 
-            Below is the list of resolutions you've provided
-            Please make sure everything is fine and confirm your changes
+        Below is the list of resolutions you've provided
+        Please make sure everything is fine and confirm your changes
 
-                1. VM with cloud ID `i-afe2801' missing.
-                 Delete VM reference
+            1. VM with cloud ID `i-afe2801' missing.
+             Delete VM reference
 
-                2. VM with cloud ID `i-36741a86' missing.
-                 Delete VM reference
+            2. VM with cloud ID `i-36741a86' missing.
+             Delete VM reference
 
-                3. VM with cloud ID `i-ce751b7e' missing.
-                 Delete VM reference
+            3. VM with cloud ID `i-ce751b7e' missing.
+             Delete VM reference
 
-            Apply resolutions? (type 'yes' to continue): yes
-            Applying resolutions...
+        Apply resolutions? (type 'yes' to continue): yes
+        Applying resolutions...
 
-            Director task 35
-              Started applying problem resolutions
-              Started applying problem resolutions > missing_vm 11: Delete VM reference. Done (00:00:00)
-              Started applying problem resolutions > missing_vm 27: Delete VM reference. Done (00:00:00)
-              Started applying problem resolutions > missing_vm 26: Delete VM reference. Done (00:00:00)
-                 Done applying problem resolutions (00:00:00)
+        Director task 35
+          Started applying problem resolutions
+          Started applying problem resolutions > missing_vm 11: Delete VM reference. Done (00:00:00)
+          Started applying problem resolutions > missing_vm 27: Delete VM reference. Done (00:00:00)
+          Started applying problem resolutions > missing_vm 26: Delete VM reference. Done (00:00:00)
+             Done applying problem resolutions (00:00:00)
 
-            Task 35 done
+        Task 35 done
 
-            Started   2015-11-26 01:47:08 UTC
-            Finished  2015-11-26 01:47:08 UTC
-            Duration  00:00:00
-            Cloudcheck is finished
+        Started   2015-11-26 01:47:08 UTC
+        Finished  2015-11-26 01:47:08 UTC
+        Duration  00:00:00
+        Cloudcheck is finished
+        </pre>
 
         By watching `bosh instances` you'll see the VMs transition from `unresponsive agent` to `starting`. Ultimately, two will appear as `failing`, this is OK.
 
-            $ bosh instances
-            [...]
-            +--------------------------------------------------+----------+------------------------------------------------+------------+
-            | mysql-partition-e97dae91e44681e0b543/0           | starting | mysql-partition-e97dae91e44681e0b543           | 10.0.16.60 |
-            | mysql-partition-e97dae91e44681e0b543/1           | failing  | mysql-partition-e97dae91e44681e0b543           | 10.0.16.61 |
-            | mysql-partition-e97dae91e44681e0b543/2           | failing  | mysql-partition-e97dae91e44681e0b543           | 10.0.16.62 |
-            +--------------------------------------------------+----------+------------------------------------------------+------------+
+        <pre class="terminal">
+        $ bosh instances
+        [...]
+        +--------------------------------------------------+----------+------------------------------------------------+------------+
+        | mysql-partition-e97dae91e44681e0b543/0           | starting | mysql-partition-e97dae91e44681e0b543           | 10.0.16.60 |
+        | mysql-partition-e97dae91e44681e0b543/1           | failing  | mysql-partition-e97dae91e44681e0b543           | 10.0.16.61 |
+        | mysql-partition-e97dae91e44681e0b543/2           | failing  | mysql-partition-e97dae91e44681e0b543           | 10.0.16.62 |
+        +--------------------------------------------------+----------+------------------------------------------------+------------+
+        </pre>
 
         Do not proceed to the next step until all three VMs are in the `starting`/`failing` state.
 
@@ -452,9 +460,9 @@ Bootstrapping identifies the primary node to synchronize all of the nodes in a c
     | mysql-partition-f8abb6ac43ccc9fe16d7/2   | running   | mysql-partition-f8abb6ac43ccc9fe16d7    | 10.0.16.61 |
     </pre>
 1. Run `bosh edit deployment` to launch a `vi` editor and reset the deployment manifest.
-  <pre class="terminal">
+    <pre class="terminal">
     $ bosh edit deployment
-  </pre>
+    </pre>
     1. Set `update.canaries` to `1`.
     1. Set `update.max_in_flight` to `1`.
     1. Set `update.serial` to `true`.
@@ -465,9 +473,9 @@ it means that monit is still trying to stop the vms. Please wait a few minutes a
 ## <a id='common'></a>Resolve Common Issues ##
 
 - You may experience an error for too many key identities loaded in your authentication agent:
-<pre class="terminal">
-\> Received disconnect from 10.0.1.19: 2: Too many authentication failures for bosh_64898ue98
-</pre>
+   <pre class="terminal">
+   \> Received disconnect from 10.0.1.19: 2: Too many authentication failures for bosh_64898ue98
+   </pre>
   If so, you can clear all of them using `ssh-add -D`.
 
 - If you have an issue with not being able to `monit start`, it may be due to a bug in `mariadb_ctrl` that does not collect a defunct process. In that case, call Pivotal support for help. You can also see the [Known Issues](../../../p-mysql/known-issues.html) topic for more information.
